@@ -2,7 +2,7 @@
 
 This is the Javascript documentation of [my personal/portfolio website](http://martinsonesson.se).
 
-For full codebase see the [Github repo](http://www.github.com/ToWelie89/martinsweb).
+For full codebase see the [Github repo](http://www.github.com/sonesson89/martinsweb).
 
 ## Namespaces
     /**

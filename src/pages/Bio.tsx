@@ -9,8 +9,8 @@ function Bio() {
         <span id="previewTitle"></span>
         <div id="linksInnerContainer">
           <a href="http://se.linkedin.com/pub/martin-sonesson/47/b65/200" target="_blank"><i className="fab fa-linkedin fa-3x"></i></a>
-          <a href="http://www.github.com/ToWelie89" target="_blank"><i className="fab fa-github fa-3x"></i></a>
-          <a href="https://twitter.com/Martin_Sonesson" target="_blank"><i className="fab fa-twitter fa-3x"></i></a>
+          <a href="http://www.github.com/sonesson89" target="_blank"><i className="fab fa-github fa-3x"></i></a>
+          {/* <a href="https://twitter.com/Martin_Sonesson" target="_blank"><i className="fab fa-twitter fa-3x"></i></a> */}
           <a href="http://stackoverflow.com/users/1408603/martingo89" target="_blank"><i className="fab fa-stack-overflow fa-3x"></i></a>
           <a href="https://www.instagram.com/sonesson.mini.painting/" target="_blank"><i className="fab fa-instagram fa-3x"></i></a>
           <a href="https://dribbble.com/martinsonesson" target="_blank"><i className="fab fa-dribbble fa-3x"></i></a>
@@ -141,7 +141,7 @@ function Bio() {
               website is one of those. Under the <a href="/projects">projects
                 section</a>
               you can view some of my additional work with detailed explanations.
-              You may also checkout my <a href="http://www.github.com/ToWelie89" target="_blank">Github profile</a>.
+              You may also checkout my <a href="http://www.github.com/sonesson89" target="_blank">Github profile</a>.
               <br />
               <br />
               I am a passionate and friendly person. I am keen to learn new things

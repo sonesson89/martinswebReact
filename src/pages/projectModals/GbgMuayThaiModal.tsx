@@ -103,7 +103,7 @@ export const GbgMuayThaiModal = (props: any) => {
       <div className="modal-footer">
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/lionsden"
+          href="https://github.com/sonesson89/lionsden"
           target="_blank"
         >
           <p data-text="Code"></p>

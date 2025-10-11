@@ -178,7 +178,7 @@ export const TotalRiskModal = (props: any) => {
       <div className="modal-footer">
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/TotalRisk"
+          href="https://github.com/sonesson89/TotalRisk"
           target="_blank"
         >
           <p data-text="Code"></p>

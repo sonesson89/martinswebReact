@@ -62,7 +62,7 @@ export const InstagramAnalyzerModal = (props: any) => {
         </a>
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/instagramanalytics"
+          href="https://github.com/sonesson89/instagramanalytics"
           target="_blank"
         >
           <p data-text="Code"></p>

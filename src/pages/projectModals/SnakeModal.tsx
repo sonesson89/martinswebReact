@@ -95,7 +95,7 @@ export const SnakeModal = (props: any) => {
         </a>
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/GyroSnake"
+          href="https://github.com/sonesson89/GyroSnake"
           target="_blank"
         >
           <p data-text="Code"></p>

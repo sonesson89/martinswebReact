@@ -58,14 +58,14 @@ export const PortfolioModal = (props: any) => {
       <div className="modal-footer">
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/martinswebReact"
+          href="https://github.com/sonesson89/martinswebReact"
           target="_blank"
         >
           <p data-text="Code (React version)"></p>
         </a>
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/martinsweb"
+          href="https://github.com/sonesson89/martinsweb"
           target="_blank"
         >
           <p data-text="Code (Angular version)"></p>

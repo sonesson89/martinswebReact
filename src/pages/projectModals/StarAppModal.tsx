@@ -95,7 +95,7 @@ export const StarAppModal = (props: any) => {
       <div className="modal-footer">
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/StarApp"
+          href="https://github.com/sonesson89/StarApp"
           target="_blank"
         >
           <p data-text="Code"></p>

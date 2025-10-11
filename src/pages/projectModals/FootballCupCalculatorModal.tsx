@@ -121,28 +121,28 @@ export const FootballCupCalculatorModal = (props: any) => {
         <div style={{ display: 'flex' }}>
           <a
             className="button"
-            href="https://github.com/ToWelie89/WC2014Calculator"
+            href="https://github.com/sonesson89/WC2014Calculator"
             target="_blank"
           >
             <p data-text="Code WC 2014"></p>
           </a>
           <a
             className="button"
-            href="https://github.com/ToWelie89/WorldCup2018Simulator"
+            href="https://github.com/sonesson89/WorldCup2018Simulator"
             target="_blank"
           >
             <p data-text="Code WC 2018"></p>
           </a>
           <a
             className="button"
-            href="https://github.com/ToWelie89/EuroCup2021Simulator"
+            href="https://github.com/sonesson89/EuroCup2021Simulator"
             target="_blank"
           >
             <p data-text="Code EC 2021"></p>
           </a>
           <a
             className="button"
-            href="https://github.com/ToWelie89/EuroCup2024Simulator"
+            href="https://github.com/sonesson89/EuroCup2024Simulator"
             target="_blank"
           >
             <p data-text="Code EC 2024"></p>

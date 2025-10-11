@@ -114,7 +114,7 @@ export const CultsSellerModal = (props: any) => {
         </a>
         <a
           className="button floatRight"
-          href="https://github.com/ToWelie89/Cults3DSellerStats"
+          href="https://github.com/sonesson89/Cults3DSellerStats"
           target="_blank"
         >
           <p data-text="Source Code"></p>

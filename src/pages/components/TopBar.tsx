@@ -14,15 +14,15 @@ const TopBar = () => {
           >
             <i className="fab fa-linkedin-in fa-2x"></i>
           </a>
-          <a href="http://www.github.com/ToWelie89" target="_blank">
+          <a href="http://www.github.com/sonesson89" target="_blank">
             <i className="fab fa-github fa-2x"></i>
           </a>
           <a href="https://dribbble.com/martinsonesson" target="_blank">
             <i className="fab fa-dribbble fa-2x"></i>
           </a>
-          <a href="https://twitter.com/Martin_Sonesson" target="_blank">
+          {/* <a href="https://twitter.com/Martin_Sonesson" target="_blank">
             <i className="fab fa-twitter fa-2x"></i>
-          </a>
+          </a> */}
           <a href="http://martinsonesson.wordpress.com" target="_blank">
             <i className="fab fa-wordpress fa-2x"></i>
           </a>
