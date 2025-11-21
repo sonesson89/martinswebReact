@@ -2,6 +2,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useState } from 'react';
 import ProjectModalHeader from '../projectModals/projectModalComponents/ProjectModalHeader';
 import ThreeDModelModal from './ThreeDModelModal';
+import { initiate3dModel } from '../../utils/3dModelViewer';
 
 export const PortfolioAnimationModal = (props: any) => {
   const tabs = ['Demo'];
@@ -26,7 +27,7 @@ export const PortfolioAnimationModal = (props: any) => {
 
   const onAfterOpen = () => {
     console.log('OPENED!!!');
-    (window as any).initiate3dModel(
+    initiate3dModel(
       './../src/assets/3dmodels/start/sonesson_logo.glb',
       '.threeDModelPreview',
       false,

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ProjectModalHeader from '../projectModals/projectModalComponents/ProjectModalHeader';
 import ThreeDModelModal from './ThreeDModelModal';
 import { Link } from 'react-router-dom';
+import { initiate3dModel } from '../../utils/3dModelViewer';
 
 export const TriplaneModelModal = (props: any) => {
   const tabs = ['Demo'];
@@ -27,7 +28,7 @@ export const TriplaneModelModal = (props: any) => {
 
   const onAfterOpen = () => {
     console.log('OPENED!!!');
-    (window as any).initiate3dModel(
+    initiate3dModel(
       './../src/assets/3dmodels/triplane/triplane.glb',
       '.threeDModelPreview',
       true,
@@ -51,7 +52,7 @@ export const TriplaneModelModal = (props: any) => {
           (x: any) => x.name === 'Pilot' || x.name === 'Propeller'
         );
       },
-      null,
+      undefined,
       {
         enablePan: true,
         enableRotate: true,
