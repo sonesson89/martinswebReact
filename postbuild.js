@@ -78,6 +78,8 @@ const run = async () => {
   await copyFolder('src/documents', 'dist/src/documents');
   await copyFolder('src/miscFiles', 'dist/src/miscFiles');
   await copyFolder('.htaccess', 'dist/.htaccess');
+  await copyFolder('ec2024.png', 'dist/ec2024.png');
+  await copyFolder('ec2021.png', 'dist/ec2021.png');
 
   await removeSizeIndicator();
 
@@ -86,7 +88,6 @@ const run = async () => {
       'browser-extension-test-site.html',
       'dist/browser-extension-test-site.html'
     );
-    await copyFolder('browserExtensionTest', 'dist/browserExtensionTest');
     await copyFolder(
       'redirect_youtube_mass_stl.php',
       'dist/redirect_youtube_mass_stl.php'
@@ -107,6 +108,14 @@ const run = async () => {
     await createSymlink(
       '/var/www/martinswebReact/pi/Cults3DSellerStats/dist',
       '/var/www/martinswebReact/dist/cults'
+    );
+    await createSymlink(
+      '/var/www/martinswebReact/risk',
+      '/var/www/martinswebReact/dist/risk'
+    );
+    await createSymlink(
+      '/var/www/martinswebReact/pi/40k',
+      '/var/www/martinswebReact/dist/40k'
     );
   }
 };
