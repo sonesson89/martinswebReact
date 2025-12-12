@@ -243,7 +243,7 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
     setLoadingEnvironment(true);
     const environment =
       Object.entries(environments).find(
-        ([key, env]) => env.id === selectedEnvironment
+        ([_key, env]) => env.id === selectedEnvironment
       )?.[1] || environments.None;
 
     getCubeMapTexture(environment).then(({ envMap }) => {
@@ -379,7 +379,7 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
         position: THREE.Vector3;
         rotation: THREE.Euler;
       } | null = null;
-      const _logCameraState = (reason?: string) => {
+      const _logCameraState = (_reason?: string) => {
         if (!camera) return;
         /* console.log(`camera changed${reason ? ` (${reason})` : ''}`, {
           position: {

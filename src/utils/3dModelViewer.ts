@@ -160,9 +160,9 @@ export const initiate3dModel = (
   const MANAGER = new THREE.LoadingManager();
   // show/hide/update the loading overlay using the manager callbacks
   MANAGER.onStart = function (
-    url?: string,
+    /* url?: string,
     itemsLoaded?: number,
-    itemsTotal?: number
+    itemsTotal?: number */
   ) {
     try {
       loadingOverlay.style.display = 'flex';
@@ -173,7 +173,7 @@ export const initiate3dModel = (
     } catch (e) {}
   };
   MANAGER.onProgress = function (
-    url?: string,
+    _url?: string,
     itemsLoaded?: number,
     itemsTotal?: number
   ) {
@@ -199,7 +199,7 @@ export const initiate3dModel = (
       loadingOverlay.style.display = 'none';
     } catch (e) {}
   };
-  MANAGER.onError = function (url?: string) {
+  MANAGER.onError = function (_url?: string) {
     try {
       const text = loadingOverlay.querySelector(
         '.mw-loading-text'

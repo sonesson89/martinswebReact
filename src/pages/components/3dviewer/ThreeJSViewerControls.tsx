@@ -8,7 +8,6 @@ import styled from 'styled-components';
 
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SupportedTypes } from './types';
-import { Add } from '@mui/icons-material';
 
 type ThreeJSViewerControlsProps = {
   loading: boolean;
@@ -28,10 +27,6 @@ const Row = styled.div`
     flex-grow: 1;
     max-width: 20%;
   }
-`;
-
-const Column = styled.div`
-  flex: 1;
 `;
 
 const CloseButton = styled.div`
@@ -280,7 +275,7 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
             <Checkbox
               type="checkbox"
               checked={useSrgbEncoding}
-              onChange={(e: any) => {
+              onChange={() => {
                 const newValue = !useSrgbEncoding;
                 setUseSrgbEncoding(newValue);
 

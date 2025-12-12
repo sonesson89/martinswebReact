@@ -136,6 +136,7 @@ export const PenguinModelModal = (props: {
                 }}
                 lights={[accentSpot /* , hemiLight, keyLight */]}
                 childrenCallback={(children: any) => {
+                  console.log('children', children)
                   //setAllSubChildrenToReceiveShadow(children);
                 }}
                 showAxes={true}
