@@ -1,11 +1,13 @@
-import { Outlet } from "react-router-dom";
-import styled from "styled-components";
-import TopBar from "./components/TopBar";
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
+import TopBar from './components/TopBar';
 
-import "./../less/init.less";
+import './../less/init.less';
 
-import pkg from "./../../package.json";
-import Menu from "./components/Menu";
+import pkg from './../../package.json';
+import Menu from './components/Menu';
+import SnowEffect from './components/SnowEffect';
+import { isHolidaySeason } from '../utils/helpers';
 
 const MainContainer = styled.div``;
 
@@ -15,6 +17,7 @@ const Layout = () => {
   return (
     <>
       <TopBar />
+      {isHolidaySeason() && <SnowEffect />}
       <MainContainer id="main">
         <Menu />
         <div id="contentBar">

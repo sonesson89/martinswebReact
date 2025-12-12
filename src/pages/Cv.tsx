@@ -271,9 +271,12 @@ function Cv() {
         />
         <div className="modal-body">
           <p className="marginTop">
-            I have worked over 7 years at Annevo as an IT-consultant. During
-            this period I have been on several different consultancy
-            assignments.
+            I started working at Annevo AB in May 2017 as an IT-consultant.
+            Annevo has since then been acquired by twoday and is now a part of
+            twoday. However as a part of this acquisition the work conditions
+            and my role as a consultant has not really changed. But I may refer
+            to this employment as "Annevo" in some places (like older ones) and
+            "twoday" in others, just to clear out some possible confusion.
           </p>
           <div className="marginTop">
             <p>
@@ -293,6 +296,7 @@ function Cv() {
                   'sonarqube',
                   'confluence',
                   'jira',
+                  'playwright',
                   'git',
                   'vite',
                   'react',
@@ -745,10 +749,10 @@ function Cv() {
                           <li className="paddingBottom">
                             <p>
                               <span className="jobTitle">
-                                <a href="http://www.annevo.se" target="_blank">
-                                  Annevo AB
-                                </a>
-                                , IT-consultant
+                                <a href="http://www.twoday.com" target="_blank">
+                                  twoday
+                                </a>{' '}
+                                (former Annevo AB) , IT-consultant
                               </span>
                             </p>
                             <p>May 2017 - Present</p>
@@ -905,6 +909,40 @@ function Cv() {
                         style={{ paddingTop: '0px', paddingLeft: '14px' }}
                       >
                         <p>Swedish drivers license (B-körkort)</p>
+                      </div>
+                    </div>
+                    <div className="tableRow">
+                      <div
+                        className="tableRowCell"
+                        style={{ paddingTop: '0px' }}
+                      >
+                        <h4>Misc</h4>
+                      </div>
+                      <div
+                        className="tableRowCell"
+                        style={{ paddingTop: '0px', paddingLeft: '14px' }}
+                      >
+                        <ul>
+                          <li>
+                            <b>Fiverr:</b> In my private time I've made plenty
+                            of commissions for clients via the platform Fiverr,
+                            within the realm of 3D modelling. A lot of my work
+                            are for making 3D printable models to be used as
+                            tabletop miniatures or decorative pieces, but I've
+                            also made tons of other types of models. You can
+                            checkout my{' '}
+                            <a
+                              href="https://www.fiverr.com/martinsonesson"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Fiverr profile
+                            </a>{' '}
+                            for more information and you can read the reviews
+                            from my clients. As of writing this I have 65
+                            reviews in total with a perfect 5 star average.
+                          </li>
+                        </ul>
                       </div>
                     </div>
                   </div>

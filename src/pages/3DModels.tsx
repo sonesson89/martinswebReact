@@ -5,6 +5,7 @@ import { PortfolioAnimationModal } from './3dModelModals/PortfolioAnimationModal
 import { OrcModelModal } from './3dModelModals/OrcModelModal';
 import styled from 'styled-components';
 import { TriplaneModelModal } from './3dModelModals/TriplaneModelModal';
+import { PenguinModelModal } from './3dModelModals/PenguinModelModal';
 
 const ProjectsContainer = styled.div`
   display: flex;
@@ -66,6 +67,10 @@ function ThreeDModels() {
   return (
     <>
       <ProjectsContainer>
+        {/* <ModelTile
+          onClick={() => clickProjectTile('penguin')}
+          thumbnail={'./../src/assets/3dmodels/penguin/thumbnail.png'}
+        /> */}
         <ModelTile
           onClick={() => clickProjectTile('donut')}
           thumbnail={'./../src/assets/3dmodels/donut/thumbnail.png'}
@@ -83,6 +88,10 @@ function ThreeDModels() {
           thumbnail={'./../src/assets/3dmodels/triplane/thumbnail.png'}
         />
       </ProjectsContainer>
+      <PenguinModelModal
+        onClose={() => closeProjectTile()}
+        isOpen={openedModal === 'penguin'}
+      />
       <DonutModelModal
         onClose={() => closeProjectTile()}
         isOpen={openedModal === 'donut'}
