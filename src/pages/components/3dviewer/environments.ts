@@ -19,13 +19,13 @@ export const environments = {
   Venice: {
     id: 'venice-sunset',
     name: 'Venice Sunset',
-    path: 'https://storage.googleapis.com/donmccurdy-static/venice_sunset_1k.exr',
+    path: '/src/assets/3dmodels/environments/venice_sunset_1k.exr',
     format: '.exr',
   },
   FootprintCourt: {
     id: 'footprint-court',
     name: 'Footprint Court (HDR Labs)',
-    path: 'https://storage.googleapis.com/donmccurdy-static/footprint_court_2k.exr',
+    path: '/src/assets/3dmodels/environments/footprint_court_2k.exr',
     format: '.exr',
   },
 } as const satisfies Record<string, Environment>;
