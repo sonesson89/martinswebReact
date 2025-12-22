@@ -54,12 +54,8 @@ export const initiate3dModel = (
 ) => {
   console.log('initiate3dModel', gltfSource, containerName);
 
-  /* if (!document.getElementById(containerName)) {
-        return;
-    } */
-
   const container = document.querySelector(containerName);
-  if (!container) {
+  if (!container || container.innerHTML !== '') {
     return;
   }
 
@@ -159,11 +155,10 @@ export const initiate3dModel = (
 
   const MANAGER = new THREE.LoadingManager();
   // show/hide/update the loading overlay using the manager callbacks
-  MANAGER.onStart = function (
-    /* url?: string,
+  MANAGER.onStart = function () /* url?: string,
     itemsLoaded?: number,
     itemsTotal?: number */
-  ) {
+  {
     try {
       loadingOverlay.style.display = 'flex';
       const text = loadingOverlay.querySelector(

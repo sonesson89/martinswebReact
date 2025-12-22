@@ -39,6 +39,8 @@ function ThreeDModels() {
 
   let loaded = false;
 
+  console.log('modelId', modelId);
+
   useEffect(() => {
     if (!loaded) {
       loaded = true;
@@ -54,6 +56,10 @@ function ThreeDModels() {
     }
   }, [modelId]);
 
+  setTimeout(() => {
+    console.log('openedModal', openedModal);
+  }, 1000);
+
   const clickProjectTile = (id: string) => {
     navigate(id);
     setOpenedModal(id);
@@ -67,47 +73,45 @@ function ThreeDModels() {
   return (
     <>
       <ProjectsContainer>
-        {/* <ModelTile
+        <ModelTile
           onClick={() => clickProjectTile('penguin')}
-          thumbnail={'./../src/assets/3dmodels/penguin/thumbnail.png'}
-        /> */}
+          thumbnail={'/../src/assets/3dmodels/penguin/thumbnail.png'}
+        />
         <ModelTile
           onClick={() => clickProjectTile('donut')}
-          thumbnail={'./../src/assets/3dmodels/donut/thumbnail.png'}
+          thumbnail={'/../src/assets/3dmodels/donut/thumbnail.png'}
         />
         <ModelTile
           onClick={() => clickProjectTile('portfolioanimation')}
-          thumbnail={'./../src/assets/3dmodels/start/thumbnail.png'}
+          thumbnail={'/../src/assets/3dmodels/start/thumbnail.png'}
         />
         <ModelTile
           onClick={() => clickProjectTile('orc')}
-          thumbnail={'./../src/assets/3dmodels/orc/thumbnail.png'}
+          thumbnail={'/../src/assets/3dmodels/orc/thumbnail.png'}
         />
         <ModelTile
           onClick={() => clickProjectTile('plane')}
-          thumbnail={'./../src/assets/3dmodels/triplane/thumbnail.png'}
+          thumbnail={'/../src/assets/3dmodels/triplane/thumbnail.png'}
         />
       </ProjectsContainer>
-      <PenguinModelModal
-        onClose={() => closeProjectTile()}
-        isOpen={openedModal === 'penguin'}
-      />
-      <DonutModelModal
-        onClose={() => closeProjectTile()}
-        isOpen={openedModal === 'donut'}
-      />
-      <PortfolioAnimationModal
-        onClose={() => closeProjectTile()}
-        isOpen={openedModal === 'portfolioanimation'}
-      />
-      <OrcModelModal
-        onClose={() => closeProjectTile()}
-        isOpen={openedModal === 'orc'}
-      />
-      <TriplaneModelModal
-        onClose={() => closeProjectTile()}
-        isOpen={openedModal === 'plane'}
-      />
+
+      {openedModal === 'penguin' && (
+        <PenguinModelModal onClose={closeProjectTile} isOpen={true} />
+      )}
+
+      {openedModal === 'donut' && (
+        <DonutModelModal onClose={closeProjectTile} isOpen={true} />
+      )}
+
+      {openedModal === 'portfolioanimation' && (
+        <PortfolioAnimationModal onClose={closeProjectTile} isOpen={true} />
+      )}
+      {openedModal === 'orc' && (
+        <OrcModelModal onClose={closeProjectTile} isOpen={true} />
+      )}
+      {openedModal === 'plane' && (
+        <TriplaneModelModal onClose={closeProjectTile} isOpen={true} />
+      )}
     </>
   );
 }

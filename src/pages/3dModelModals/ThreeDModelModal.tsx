@@ -2,7 +2,13 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('body');
 
-const ThreeDModelModal = (props: any) => {
+const ThreeDModelModal = (props: {
+  isOpen: boolean;
+  onClose: () => void;
+  onAfterOpen?: () => void;
+  extraClasses?: string;
+  children: React.ReactNode;
+}) => {
   return (
     <Modal
       isOpen={props.isOpen}

@@ -1,9 +1,12 @@
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ProjectModalHeader from '../projectModals/projectModalComponents/ProjectModalHeader';
 import ThreeDModelModal from './ThreeDModelModal';
 import { Carousel } from 'react-responsive-carousel';
-import { initiate3dModel } from '../../utils/3dModelViewer';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useGetModalTabDeeplink } from './useGetModalTabDeeplink';
+import ThreeJSViewer from '../components/3dviewer/ThreeJSViewer';
+import { orcSceneConfiguration } from './sceneConfigurations/orcSceneConfiguration';
 
 const setAllSubChildrenToReceiveShadow = (children: any) => {
   children.forEach((child: any) => {
@@ -21,58 +24,23 @@ const setAllSubChildrenToReceiveShadow = (children: any) => {
   });
 };
 
-const generate3dPreview = () => {
-  console.log('ORC OPENED');
-  initiate3dModel(
-    './../src/assets/3dmodels/orc/orc.glb',
-    '.threeDModelPreview',
-    true,
-    {
-      // camera config
-      rotation: {
-        x: -0.2029013172089961,
-        y: 0.33028185740198107,
-        z: 0.06662224847372154,
-      },
-      position: {
-        x: 2.625152903217499,
-        y: 2.662201418567157,
-        z: 7.63151455321799,
-      },
-    },
-    null,
-    undefined,
-    undefined,
-    {
-      enablePan: false,
-      enableRotate: true,
-      enableZoom: true,
-      maxDistance: 13,
-      minDistance: 5,
-    }
-  );
-};
+enum Tab {
+  Pictures = 'Pictures',
+  Animation = 'Animation',
+  Preview3D = '3D Preview',
+}
 
 export const OrcModelModal = (props: any) => {
-  const tabs = ['Pictures', 'Animation', '3D Preview'];
+  const tabs = [Tab.Pictures, Tab.Animation, Tab.Preview3D];
 
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const { modelId } = useParams();
+  const navigate = useNavigate();
+  const { preselectedTab } = useGetModalTabDeeplink(tabs);
 
-  useEffect(() => {
-    console.log('location', location);
-    if (activeTab === '3D Preview') {
-      generate3dPreview();
-    }
-  }, [activeTab]);
+  const [activeTab, setActiveTab] = useState(preselectedTab ?? tabs[0]);
 
   return (
-    <ThreeDModelModal
-      onClose={props.onClose}
-      isOpen={props.isOpen}
-      onAfterOpen={() => {
-        setActiveTab(tabs[0]);
-      }}
-    >
+    <ThreeDModelModal onClose={props.onClose} isOpen={props.isOpen}>
       <ProjectModalHeader label={'Orc'} onClose={props.onClose} />
       <div className="modal-body">
         <div className="projectTabsContainer marginTop">
@@ -80,12 +48,15 @@ export const OrcModelModal = (props: any) => {
             <div
               key={'modal-tab-' + i}
               className={`projectTab ${x === activeTab ? 'projectTab--selected' : ''}`}
-              onClick={() => setActiveTab(x)}
+              onClick={() => {
+                setActiveTab(x);
+                navigate(`${modelId}/${x.toLowerCase().replace(' ', '-')}`);
+              }}
             >
               {x}
             </div>
           ))}
-          {activeTab === 'Pictures' ? (
+          {activeTab === Tab.Pictures ? (
             <div className="projectTabContent">
               <Carousel
                 showArrows={true}
@@ -96,26 +67,26 @@ export const OrcModelModal = (props: any) => {
                 dynamicHeight={true}
               >
                 <div>
-                  <img src="./../src/assets/3dmodels/orc/1.png" />
+                  <img src="/../src/assets/3dmodels/orc/1.png" />
                   {/* <p className="legend">Legend 1</p> */}
                 </div>
                 <div>
-                  <img src="./../src/assets/3dmodels/orc/2.png" />
+                  <img src="/../src/assets/3dmodels/orc/2.png" />
                   {/* <p className="legend">Legend 2</p> */}
                 </div>
                 <div>
-                  <img src="./../src/assets/3dmodels/orc/3.png" />
+                  <img src="/../src/assets/3dmodels/orc/3.png" />
                   {/* <p className="legend">Legend 2</p> */}
                 </div>
               </Carousel>
             </div>
           ) : null}
-          {activeTab === 'Animation' ? (
+          {activeTab === Tab.Animation ? (
             <div className="projectTabContent">
-              <img src="./../src/assets/3dmodels/orc/gif2.gif" />
+              <img src="/../src/assets/3dmodels/orc/gif2.gif" />
             </div>
           ) : null}
-          {activeTab === '3D Preview' ? (
+          {activeTab === Tab.Preview3D ? (
             <div className="projectTabContent">
               <p
                 style={{
@@ -127,7 +98,13 @@ export const OrcModelModal = (props: any) => {
                 Use your mouse and mouse-wheel (or fingers on a tablet) to
                 rotate and zoom the 3D model.
               </p>
-              <div className="threeDModelPreview"></div>
+              <ThreeJSViewer
+                path="/../src/assets/3dmodels/orc/orc.glb"
+                enableOrbit={true}
+                showAxes={true}
+                backgroundImagePath="/src/assets/3dmodels/orc/orc_bg.png"
+                sceneConfig={orcSceneConfiguration}
+              />
               <p
                 style={{
                   fontSize: '1.3em !important',
@@ -135,19 +112,17 @@ export const OrcModelModal = (props: any) => {
                   color: '#050505',
                 }}
               >
-                The eyes were created with procedurally generated shaders in
-                Blender, which cannot be exported into a glb-file which is what
-                is presented here via three.js. Therefore the eyes are plain
-                white in 3D preview mode.
+                The eyes are completely white in 3D preview mode, because they
+                were made using a procedeural shader that is not supported in
+                three.js.
               </p>
             </div>
           ) : null}
         </div>
         <p className="marginTop--double">
-          This is my first somewhat successful attempt at sculpting in Blender.
-          It's a simple orc head, inspired by orcs from Warhammer and Warcraft.
-          I plan to continue this model some day and create the rest of the body
-          as well.
+          This was one of my earlier attempts at sculpting organic creatures in
+          Blender. It's a simple orc head inspired by orcs from Warhammer and
+          Warcraft.
         </p>
       </div>
     </ThreeDModelModal>

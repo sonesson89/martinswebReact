@@ -8,6 +8,10 @@ const SantaHat = styled.img`
   transform: scale(-1, 1) rotate(-17deg);
   left: -18px;
   top: 10px;
+
+  @media only screen and (min-width: 0em) and (max-width: 47.99em) {
+    display: none;
+  }
 `;
 
 const TopBar = () => {

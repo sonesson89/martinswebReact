@@ -88,10 +88,28 @@ export const GoFullScreenButton = styled(ThreeJSViewerButton)`
   height: 32px;
 `;
 
-export const SetRotateButton = styled(ThreeJSViewerButton)`
+export const SetRotateButton = styled(ThreeJSViewerButton)<{ $isOn: boolean }>`
   right: 45px;
   top: 6px;
   padding: 3px;
   width: 32px;
   height: 32px;
+  border: 3px solid transparent;
+  display: flex;
+  align-content: center;
+  align-items: center;
+
+  svg {
+    width: 100%;
+  }
+
+  ${(props) => {
+    if (props.$isOn) {
+      return css`
+        border: 3px solid #18ed18;
+        box-shadow: 0 0 20px #63e263;
+      `;
+    }
+    return '';
+  }}
 `;

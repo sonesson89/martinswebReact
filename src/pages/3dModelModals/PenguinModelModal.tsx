@@ -1,11 +1,16 @@
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import * as THREE from 'three';
 import { useState } from 'react';
 import ProjectModalHeader from '../projectModals/projectModalComponents/ProjectModalHeader';
 import ThreeDModelModal from './ThreeDModelModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
 import ThreeJSViewer from '../components/3dviewer/ThreeJSViewer';
+import ColorSelector from '../components/3dviewer/ColorSelector';
+import styled from 'styled-components';
+import { penguinSceneConfiguration } from './sceneConfigurations/penguinSceneConfiguration';
+import {
+  useGetModalTabDeeplink
+} from './useGetModalTabDeeplink';
 
 enum Tab {
   Renders = 'Renders',
@@ -13,6 +18,23 @@ enum Tab {
   Video = 'Video',
   LogoComparison = 'Blender Viewport',
 }
+
+const ColorSelectorWrapper = styled.div`
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 30;
+
+  > div {
+    margin: 0;
+    input {
+      margin: 0;
+      border-radius: 0px;
+    }
+  }
+`;
 
 export const PenguinModelModal = (props: {
   onClose: () => void;
@@ -25,36 +47,11 @@ export const PenguinModelModal = (props: {
     Tab.LogoComparison,
   ];
 
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const { modelId } = useParams();
+  const navigate = useNavigate();
+  const { preselectedTab } = useGetModalTabDeeplink(tabs);
 
-  // Lighting setup tuned for product-style preview (three-point + hemisphere)
-  // Hemisphere: soft sky/fill light
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-  hemiLight.position.set(0, 1, 0);
-
-  // Key (main) directional light — warm, stronger, casts shadows
-  const keyLight = new THREE.DirectionalLight(0xfff1e0, 1.2);
-  keyLight.position.set(2, 4, 2);
-  keyLight.castShadow = true;
-  keyLight.shadow.mapSize.width = 1024;
-  keyLight.shadow.mapSize.height = 1024;
-  keyLight.shadow.radius = 4;
-  keyLight.shadow.bias = -0.0005;
-
-  // Fill light — cooler, softer, reduces contrast
-  const fillLight = new THREE.DirectionalLight(0xaabfff, 0.45);
-  fillLight.position.set(-2, 1.5, 1);
-
-  // Rim/back light — separates object from background
-  const rimLight = new THREE.DirectionalLight(0xffffff, 0.35);
-  rimLight.position.set(-1.5, 2, -3);
-
-  // Small spotlight accent (optiornal) to bring out details
-  const accentSpot = new THREE.SpotLight(0xffffff, 0.6);
-  accentSpot.distance = 12;
-  accentSpot.angle = Math.PI / 8;
-  accentSpot.penumbra = 0.3;
-  accentSpot.castShadow = true;
+  const [activeTab, setActiveTab] = useState(preselectedTab ?? tabs[0]);
 
   const setAllSubChildrenToReceiveShadow = (children: any) => {
     children.forEach((child: any) => {
@@ -73,13 +70,7 @@ export const PenguinModelModal = (props: {
   };
 
   return (
-    <ThreeDModelModal
-      onClose={props.onClose}
-      isOpen={props.isOpen}
-      onAfterOpen={() => {
-        setActiveTab(Tab.Renders);
-      }}
-    >
+    <ThreeDModelModal onClose={props.onClose} isOpen={props.isOpen}>
       <ProjectModalHeader label={'Penguin Marine'} onClose={props.onClose} />
 
       <div className="modal-body">
@@ -88,7 +79,10 @@ export const PenguinModelModal = (props: {
             <div
               key={'modal-tab-' + i}
               className={`projectTab ${x === activeTab ? 'projectTab--selected' : ''}`}
-              onClick={() => setActiveTab(x)}
+              onClick={() => {
+                setActiveTab(x);
+                navigate(`${modelId}/${x.toLowerCase().replace(' ', '-')}`);
+              }}
             >
               {x}
             </div>
@@ -104,44 +98,58 @@ export const PenguinModelModal = (props: {
                 dynamicHeight={true}
               >
                 <div>
-                  <img src="./../src/assets/3dmodels/penguin/3.png" />
+                  <img src="/src/assets/3dmodels/penguin/3.png" />
                 </div>
                 <div>
-                  <img src="./../src/assets/3dmodels/penguin/5.png" />
+                  <img src="/src/assets/3dmodels/penguin/5.png" />
                 </div>
                 <div>
-                  <img src="./../src/assets/3dmodels/penguin/6.png" />
+                  <img src="/src/assets/3dmodels/penguin/6.png" />
                 </div>
                 <div>
-                  <img src="./../src/assets/3dmodels/penguin/4.png" />
+                  <img src="/src/assets/3dmodels/penguin/4.png" />
                 </div>
               </Carousel>
             </div>
           ) : null}
           {activeTab === Tab.Preview3D ? (
-            <div className="projectTabContent">
+            <div
+              className="projectTabContent"
+              style={{
+                position: 'relative',
+              }}
+            >
+              <ColorSelectorWrapper>
+                <ColorSelector
+                  tooltipContent="Change Armor Color"
+                  tooltipId="penguin-armor-color-tooltip"
+                  color={''}
+                  onChange={(color) => {
+                    const armorPieces = [
+                      'Sphere063',
+                      'Sphere055',
+                      'Cube038',
+                      'Sphere057',
+                      'Sphere058',
+                      'Cube045',
+                    ];
+                    console.log(color);
+
+                    const scene: THREE.Scene = (window as any).scene;
+                    scene.traverse((child: any) => {
+                      if (armorPieces.includes(child.name)) {
+                        child.material.color.set(color);
+                      }
+                    });
+                  }}
+                />
+              </ColorSelectorWrapper>
               <ThreeJSViewer
-                path="./../src/assets/3dmodels/penguin/penguin.glb"
+                path="/src/assets/3dmodels/penguin/penguin.glb"
                 enableOrbit={true}
-                cameraConfig={{
-                  rotation: { x: -0.166814, y: -0.085296, z: -0.014344 },
-                  position: { x: -1.414081, y: -0.084186, z: 6.316755 },
-                }}
-                orbitSettings={{
-                  enablePan: true,
-                  enableRotate: true,
-                  enableZoom: true,
-                  maxDistance: 40,
-                  minDistance: 1,
-                }}
-                lights={[accentSpot /* , hemiLight, keyLight */]}
-                childrenCallback={(children: any) => {
-                  console.log('children', children)
-                  //setAllSubChildrenToReceiveShadow(children);
-                }}
                 showAxes={true}
-                backgroundImagePath="./../src/assets/3dmodels/penguin/bg.png"
-                srgbEncoding={true}
+                backgroundImagePath="/src/assets/3dmodels/penguin/bg.png"
+                sceneConfig={penguinSceneConfiguration}
               />
             </div>
           ) : null}
@@ -149,7 +157,7 @@ export const PenguinModelModal = (props: {
             <div className="projectTabContent">
               <video controls autoPlay loop>
                 <source
-                  src="./../src/assets/3dmodels/penguin/video.mp4"
+                  src="/src/assets/3dmodels/penguin/video.mp4"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
@@ -158,7 +166,7 @@ export const PenguinModelModal = (props: {
           ) : null}
           {activeTab === Tab.LogoComparison ? (
             <div className="projectTabContent">
-              <img src="./../src/assets/3dmodels/penguin/viewport.webp" />
+              <img src="/src/assets/3dmodels/penguin/viewport.webp" />
             </div>
           ) : null}
         </div>

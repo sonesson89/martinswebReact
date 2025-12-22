@@ -922,7 +922,13 @@ function Cv() {
                         className="tableRowCell"
                         style={{ paddingTop: '0px', paddingLeft: '14px' }}
                       >
-                        <ul>
+                        <ul
+                          style={{
+                            gap: '10px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                          }}
+                        >
                           <li>
                             <b>Fiverr:</b> In my private time I've made plenty
                             of commissions for clients via the platform Fiverr,
@@ -941,6 +947,22 @@ function Cv() {
                             for more information and you can read the reviews
                             from my clients. As of writing this I have 65
                             reviews in total with a perfect 5 star average.
+                          </li>
+                          <li>
+                            <b>Cults3D:</b> As a part of 3D modelling work that
+                            I do in my spare time I also sell some of my 3D
+                            printable models on Cults3D. I have almost 1000
+                            followers and over 2400 individual sales/downloads
+                            of my models. You can check out my Cults 3D profile{' '}
+                            <Link
+                              target="_blank"
+                              to={
+                                'https://cults3d.com/en/users/martinsonesson/3d-models'
+                              }
+                            >
+                              here
+                            </Link>
+                            .
                           </li>
                         </ul>
                       </div>

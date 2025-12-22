@@ -26,7 +26,9 @@ export default function App() {
             <Route path=":printId" element={<ThreeDPrints />} />
           </Route>
           <Route path="3dmodels" element={<ThreeDModels />}>
-            <Route path=":modelId" element={<ThreeDPrints />} />
+            <Route path=":modelId" element={<ThreeDModels />}>
+              <Route path=":tabId" element={<ThreeDModels />} />
+            </Route>
           </Route>
           <Route path="art" element={<Art />} />
           <Route path="blog" element={<Blog />} />

@@ -7,7 +7,15 @@ import ColorSelector from './ColorSelector';
 import styled from 'styled-components';
 
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { SupportedTypes } from './types';
+import AddIcon from '@mui/icons-material/Add';
+import { SceneConfiguration, SupportedTypes } from './types';
+import {
+  addAmbientLight,
+  addDirectionalLight,
+  addHemisphereLight,
+  addSpotlight,
+  getSceneConfiguration,
+} from './helpers';
 
 type ThreeJSViewerControlsProps = {
   loading: boolean;
@@ -66,6 +74,9 @@ const RemoveButton = styled(ControlsButton)`
 const AddButton = styled(ControlsButton)`
   background: #27a41c;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: #28c328;
@@ -224,6 +235,18 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
     }
   };
 
+  const updateLights = () => {
+    const scene = (window as any).scene as THREE.Scene;
+    const sceneLights = scene.children.filter(
+      (light: any) =>
+        light.type === 'AmbientLight' ||
+        light.type === 'HemisphereLight' ||
+        light.type === 'SpotLight' ||
+        light.type === 'DirectionalLight'
+    ) as SupportedTypes[];
+    setLights(sceneLights);
+  };
+
   return (
     <>
       {!isDisplayed ? (
@@ -304,95 +327,96 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
           </div>
           <AddButton
             onClick={() => {
-              const scene = (window as any).scene as THREE.Scene;
-              const newLight = new THREE.SpotLight(0xffffff, 0.6);
-              newLight.position.set(0, 5, 0);
-              newLight.angle = Math.PI / 8;
-              newLight.distance = 12;
-              newLight.penumbra = 0.3;
-              newLight.castShadow = true;
-
-              // Set initial rotation to point downward (-90 degrees on X axis)
-              newLight.rotation.x = -Math.PI / 2;
-
-              // Make target a child of the light so it follows rotation
-              newLight.add(newLight.target);
-              newLight.target.position.set(0, 0, -1);
-
-              scene.add(newLight);
-
-              const helper = new THREE.SpotLightHelper(newLight, 0x00ff00);
-              helper.userData.lightUuid = newLight.uuid;
-              scene.add(helper);
-              helper.update();
-
-              const sceneLights = scene.children.filter(
-                (light: any) =>
-                  light.type === 'AmbientLight' ||
-                  light.type === 'HemisphereLight' ||
-                  light.type === 'SpotLight' ||
-                  light.type === 'DirectionalLight'
-              ) as SupportedTypes[];
-              setLights(sceneLights);
+              addSpotlight();
+              updateLights();
             }}
           >
-            Add Spotlight
+            <AddIcon /> Spotlight
+          </AddButton>
+          <AddButton
+            onClick={() => {
+              addDirectionalLight();
+              updateLights();
+            }}
+          >
+            <AddIcon /> DirectionalLight
+          </AddButton>
+          <AddButton
+            onClick={() => {
+              addHemisphereLight();
+              updateLights();
+            }}
+          >
+            <AddIcon /> HemisphereLight
+          </AddButton>
+          <AddButton
+            onClick={() => {
+              addAmbientLight();
+              updateLights();
+            }}
+          >
+            <AddIcon /> AmbientLight
           </AddButton>
         </Row>
         <Row style={{ alignItems: 'end' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: 4 }}>
-              Select light
-            </label>
-            <select
-              value={selectedLight || ''}
-              onChange={(e) => {
+          {lights && lights.length > 0 ? (
+            <div>
+              <label style={{ display: 'block', marginBottom: 4 }}>
+                Select light
+              </label>
+              <select
+                value={selectedLight || ''}
+                onChange={(e) => {
+                  const scene = (window as any).scene as THREE.Scene;
+                  const light = scene.children.find(
+                    (x: any) => x.uuid === e.target.value
+                  );
+                  setSelectedLight(light ? light.uuid : null);
+                }}
+              >
+                {lights &&
+                  lights.length > 0 &&
+                  lights.map((l: any, i: number) => (
+                    <option key={i} value={l.uuid}>
+                      light {i + 1} - {l.type || l.constructor?.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          ) : null}
+          {selectedLight ? (
+            <RemoveButton
+              onClick={() => {
                 const scene = (window as any).scene as THREE.Scene;
                 const light = scene.children.find(
-                  (x: any) => x.uuid === e.target.value
+                  (x: any) => x.uuid === selectedLight
                 );
-                setSelectedLight(light ? light.uuid : null);
+                if (light) {
+                  // Remove target if it's a SpotLight or DirectionalLight
+                  if ((light as any).target) {
+                    scene.remove((light as any).target);
+                  }
+                  scene.remove(light);
+                  const helpers = scene.children.filter(
+                    (x: any) =>
+                      x.type.endsWith('Helper') &&
+                      x.userData?.lightUuid === selectedLight
+                  );
+                  helpers.forEach((h: any) => scene.remove(h));
+
+                  const filteredLights: SupportedTypes[] = (
+                    lights ?? []
+                  ).filter((x: any) => x.uuid !== selectedLight);
+                  setLights(filteredLights.length > 0 ? filteredLights : null);
+                  setSelectedLight(
+                    filteredLights.length > 0 ? filteredLights[0].uuid : null
+                  );
+                }
               }}
             >
-              {lights &&
-                lights.map((l: any, i: number) => (
-                  <option key={i} value={l.uuid}>
-                    light {i + 1} - {l.type || l.constructor?.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <RemoveButton
-            onClick={() => {
-              const scene = (window as any).scene as THREE.Scene;
-              const light = scene.children.find(
-                (x: any) => x.uuid === selectedLight
-              );
-              if (light) {
-                // Remove target if it's a SpotLight or DirectionalLight
-                if ((light as any).target) {
-                  scene.remove((light as any).target);
-                }
-                scene.remove(light);
-                const helpers = scene.children.filter(
-                  (x: any) =>
-                    x.type.endsWith('Helper') &&
-                    x.userData?.lightUuid === selectedLight
-                );
-                helpers.forEach((h: any) => scene.remove(h));
-
-                const filteredLights: SupportedTypes[] = (lights ?? []).filter(
-                  (x: any) => x.uuid !== selectedLight
-                );
-                setLights(filteredLights.length > 0 ? filteredLights : null);
-                setSelectedLight(
-                  filteredLights.length > 0 ? filteredLights[0].uuid : null
-                );
-              }
-            }}
-          >
-            Remove light
-          </RemoveButton>
+              Remove light
+            </RemoveButton>
+          ) : null}
         </Row>
 
         {selectedLight ? (
@@ -423,30 +447,36 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
                 onChange={(val) => updateLightPosition('y', val)}
               />
 
-              <Slider
-                min={0}
-                max={360}
-                step={1}
-                value={lightProps.rotation.x}
-                label="Rotation X"
-                onChange={(x) => updateLightRotation('x', x)}
-              />
-              <Slider
-                min={0}
-                max={360}
-                step={1}
-                value={lightProps.rotation.y}
-                label="Rotation Y"
-                onChange={(y) => updateLightRotation('y', y)}
-              />
-              <Slider
-                min={0}
-                max={360}
-                step={1}
-                value={lightProps.rotation.z}
-                label="Rotation Z"
-                onChange={(z) => updateLightRotation('z', z)}
-              />
+              {!['DirectionalLight', 'HemisphereLight'].includes(
+                lights?.find((l) => l.uuid === selectedLight)?.type ?? ''
+              ) ? (
+                <>
+                  <Slider
+                    min={0}
+                    max={360}
+                    step={1}
+                    value={lightProps.rotation.x}
+                    label="Rotation X"
+                    onChange={(x) => updateLightRotation('x', x)}
+                  />
+                  <Slider
+                    min={0}
+                    max={360}
+                    step={1}
+                    value={lightProps.rotation.y}
+                    label="Rotation Y"
+                    onChange={(y) => updateLightRotation('y', y)}
+                  />
+                  <Slider
+                    min={0}
+                    max={360}
+                    step={1}
+                    value={lightProps.rotation.z}
+                    label="Rotation Z"
+                    onChange={(z) => updateLightRotation('z', z)}
+                  />
+                </>
+              ) : null}
             </Row>
             <Row>
               {lightProps.distance !== null ? (
@@ -508,6 +538,7 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
                 }}
               />
               <ColorSelector
+                label="Color"
                 color={lightProps.color}
                 onChange={(color) => {
                   setLightProps((p) => ({ ...p, color }));
@@ -577,6 +608,20 @@ const ThreeJSViewerControls: React.FC<ThreeJSViewerControlsProps> = ({
                   }}
                 />
               ) : null}
+            </Row>
+            <Row>
+              <ControlsButton
+                onClick={() => {
+                  const configuration: SceneConfiguration =
+                    getSceneConfiguration(selectedEnvironment || '');
+                  console.log(JSON.stringify(configuration, null, 2));
+                  navigator.clipboard.writeText(
+                    JSON.stringify(configuration, null, 2)
+                  );
+                }}
+              >
+                Export current setup
+              </ControlsButton>
             </Row>
           </>
         ) : null}

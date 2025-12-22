@@ -21,7 +21,7 @@ import styled from 'styled-components';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import ThreeSixtyIcon from '@mui/icons-material/ThreeSixty';
-import { SupportedTypes } from './types';
+import { SceneConfiguration } from './types';
 
 const MainWrapper = styled.div`
   position: relative;
@@ -44,10 +44,6 @@ const LoadingLabel = styled.p`
 type ThreeJSViewerProps = {
   path: string;
   enableOrbit?: boolean;
-  cameraConfig?: {
-    rotation: { x: number; y: number; z: number };
-    position: { x: number; y: number; z: number };
-  };
   childrenCallback?: (children: THREE.Object3D[]) => void;
   loopingAnimationsFilter?: (
     animations: THREE.AnimationClip[]
@@ -55,33 +51,22 @@ type ThreeJSViewerProps = {
   playOnceAnimationsFilter?: (
     animations: THREE.AnimationClip[]
   ) => THREE.AnimationClip[];
-  orbitSettings?: {
-    enablePan: boolean;
-    enableRotate: boolean;
-    enableZoom: boolean;
-    maxDistance: number;
-    minDistance: number;
-  };
   clearColor?: any;
-  lights?: SupportedTypes[];
   showAxes?: boolean;
   backgroundImagePath?: string;
-  srgbEncoding?: boolean;
+  sceneConfig?: SceneConfiguration;
 };
 
 const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
   path,
   enableOrbit = false,
-  cameraConfig = null,
   childrenCallback = null,
   loopingAnimationsFilter = undefined,
   playOnceAnimationsFilter = undefined,
-  orbitSettings = undefined,
   clearColor = 0x000000,
-  lights = null,
   showAxes = false,
   backgroundImagePath = null,
-  srgbEncoding = null,
+  sceneConfig = null,
 }) => {
   let scene: THREE.Scene;
   let pmremGenerator: THREE.PMREMGenerator;
@@ -102,6 +87,7 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const loadedRef = useRef(false);
 
+  const [isRotating, setIsRotating] = useState<boolean>(false);
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(
     null
   );
@@ -169,45 +155,76 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
     });
   };
 
-  const addLights = () => {
+  const addLights = (lights: SceneConfiguration['lights']) => {
     console.log('lights', lights);
 
     if (lights && lights.length > 0) {
       lights.forEach((light) => {
         let helper;
+        let lightToAdd;
 
         if (light.type === 'SpotLight') {
-          light.position.set(0, 0, 10);
-          light.rotation.x = THREE.MathUtils.degToRad(0);
-          light.add((light as THREE.SpotLight).target);
-          (light as THREE.SpotLight).target.position.set(0, 0, -1);
+          lightToAdd = new THREE.SpotLight(light.color, light.intensity);
+          lightToAdd.castShadow = true;
+          lightToAdd.shadow.mapSize.width = 1024;
+          lightToAdd.shadow.mapSize.height = 1024;
+          lightToAdd.shadow.radius = 4;
+          lightToAdd.shadow.bias = -0.0005;
 
-          helper = new THREE.SpotLightHelper(light, 0x00ff00);
-        } else if (light.type === 'HemisphereLight') {
-          helper = new THREE.HemisphereLightHelper(
-            light as THREE.HemisphereLight,
-            5,
-            0xff0000
+          lightToAdd.position.set(
+            light.position.x,
+            light.position.y,
+            light.position.z
           );
+          lightToAdd.rotation.set(
+            light.rotation.x,
+            light.rotation.y,
+            light.rotation.z
+          );
+          if (light.angle) {
+            lightToAdd.angle = light.angle;
+          }
+          if (light.distance) {
+            lightToAdd.distance = light.distance;
+          }
+          if (light.penumbra) {
+            lightToAdd.penumbra = light.penumbra;
+          }
+          lightToAdd.add((lightToAdd as THREE.SpotLight).target);
+          (lightToAdd as THREE.SpotLight).target.position.set(0, 0, -1);
+
+          helper = new THREE.SpotLightHelper(lightToAdd, 0x00ff00);
+        } else if (light.type === 'HemisphereLight') {
+          lightToAdd = new THREE.HemisphereLight(light.color, light.intensity);
+          helper = new THREE.HemisphereLightHelper(lightToAdd, 5, 0xff0000);
         } else if (light.type === 'AmbientLight') {
           // AmbientLight has no position or helper, skip
         } else if (light.type === 'DirectionalLight') {
-          light.position.set(0, 0, 10);
-          // Ensure target is added to scene
-          if ((light as THREE.DirectionalLight).target) {
-            scene.add((light as THREE.DirectionalLight).target);
-          }
-          helper = new THREE.DirectionalLightHelper(
-            light as THREE.DirectionalLight,
-            1,
-            0x00ff00
+          lightToAdd = new THREE.DirectionalLight(light.color, light.intensity);
+
+          lightToAdd.castShadow = true;
+          lightToAdd.shadow.mapSize.width = 1024;
+          lightToAdd.shadow.mapSize.height = 1024;
+          lightToAdd.shadow.radius = 4;
+          lightToAdd.shadow.bias = -0.0005;
+
+          lightToAdd.position.set(
+            light.position.x,
+            light.position.y,
+            light.position.z
           );
+          // Ensure target is added to scene
+          if (lightToAdd.target) {
+            scene.add(lightToAdd.target);
+          }
+          helper = new THREE.DirectionalLightHelper(lightToAdd, 1, 0x00ff00);
         }
 
-        scene.add(light);
-
-        if (helper) {
-          helper.userData.lightUuid = light.uuid;
+        if (lightToAdd) {
+          scene.add(lightToAdd);
+        }
+        if (helper && lightToAdd) {
+          helper.userData.lightUuid = lightToAdd.uuid;
           scene.add(helper);
         }
       });
@@ -257,7 +274,7 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
         const textureLoader = new THREE.TextureLoader();
         textureLoader.load(backgroundImagePath, (texture) => {
           scene.background = texture;
-          if (srgbEncoding) {
+          if (sceneConfig?.sRGBE) {
             scene.background.encoding = THREE.sRGBEncoding;
           } else {
             scene.background.encoding = THREE.LinearEncoding;
@@ -322,9 +339,6 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
       if (!container) {
         return;
       }
-
-      console.log('Initializing ThreeJSViewer for', path);
-
       document.addEventListener('fullscreenchange', handleFullscreenChange);
 
       scene = new THREE.Scene();
@@ -342,8 +356,6 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
 
       (window as any).neutralEnvironment = neutralEnvironment;
 
-      //updateEnvironnment();
-
       let width = (container as HTMLElement).clientWidth || 800;
       let height =
         (container as HTMLElement).clientHeight ||
@@ -360,7 +372,9 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
-      addLights();
+      if (sceneConfig && sceneConfig.lights.length > 0) {
+        addLights(sceneConfig.lights);
+      }
 
       const MANAGER = new THREE.LoadingManager();
       const THREE_PATH = `https://unpkg.com/three@0.${THREE.REVISION}.x`;
@@ -401,7 +415,11 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
         function (gltf) {
           console.log('gltf', gltf);
 
-          setSelectedEnvironment(environments.FootprintCourt.id);
+          if (sceneConfig?.environment) {
+            setSelectedEnvironment(sceneConfig.environment);
+          } else {
+            setSelectedEnvironment(environments.FootprintCourt.id);
+          }
 
           object = gltf.scene || gltf.scenes[0];
           object.name = 'main_object';
@@ -431,16 +449,28 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
           if (enableOrbit) {
             orbit = new OrbitControls(camera, renderer.domElement);
 
-            if (orbitSettings) {
-              (
-                Object.keys(orbitSettings) as Array<keyof typeof orbitSettings>
-              ).forEach((key) => {
-                (orbit as any)[key] = orbitSettings[key];
-              });
+            orbit.autoRotate = sceneConfig?.orbitRotate || false;
+            if (orbit.autoRotate) {
+              setIsRotating(true);
             }
 
+            orbit.enablePan = sceneConfig?.orbitSettings
+              ? sceneConfig.orbitSettings.enablePan
+              : true;
+            orbit.enableRotate = sceneConfig?.orbitSettings
+              ? sceneConfig.orbitSettings.enableRotate
+              : true;
+            orbit.enableZoom = sceneConfig?.orbitSettings
+              ? sceneConfig.orbitSettings.enableZoom
+              : true;
+            orbit.maxDistance = sceneConfig?.orbitSettings
+              ? sceneConfig.orbitSettings.maxDistance
+              : 100;
+            orbit.minDistance = sceneConfig?.orbitSettings
+              ? sceneConfig.orbitSettings.minDistance
+              : 0.1;
+
             (window as any).orbit = orbit;
-            console.log('SET SCENE TO WINDOW');
             (window as any).scene = scene;
             (window as any).renderer = renderer;
             (window as any).camera = camera;
@@ -448,14 +478,14 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
             orbit.update();
           }
 
-          if (cameraConfig) {
-            camera.position.x = cameraConfig.position.x;
-            camera.position.y = cameraConfig.position.y;
-            camera.position.z = cameraConfig.position.z;
+          if (sceneConfig) {
+            camera.position.x = sceneConfig.camera.position.x;
+            camera.position.y = sceneConfig.camera.position.y;
+            camera.position.z = sceneConfig.camera.position.z;
 
-            camera.rotation.x = cameraConfig.rotation.x;
-            camera.rotation.y = cameraConfig.rotation.y;
-            camera.rotation.z = cameraConfig.rotation.z;
+            camera.rotation.x = sceneConfig.camera.rotation.x;
+            camera.rotation.y = sceneConfig.camera.rotation.y;
+            camera.rotation.z = sceneConfig.camera.rotation.z;
           }
 
           // initialize camera-state tracker so animate() can detect changes
@@ -500,22 +530,6 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
 
           // Add object to scene (keep lights and targets separate so they don't follow object transforms)
           scene.add(object);
-
-          // collect lights for the inspector UI and keep references in a map
-          /* const lights = scene.children.filter((n: any) => n && n.isLight);
-          if (lights.length > 0) {
-            const firstLight = lights[0] as any;
-
-            const worldPos = new THREE.Vector3();
-            if (typeof firstLight.getWorldPosition === 'function')
-              firstLight.getWorldPosition(worldPos);
-            else
-              worldPos.set(
-                firstLight.position?.x ?? 0,
-                firstLight.position?.y ?? 0,
-                firstLight.position?.z ?? 0
-              );
-          } */
 
           // Optional axes helper to show X/Y/Z directions in the viewport
           if (showAxes) {
@@ -572,7 +586,9 @@ const ThreeJSViewer: React.FC<ThreeJSViewerProps> = ({
       >
         <ThreeJSCanvasWrapper ref={containerRef} />
         <SetRotateButton
+          $isOn={isRotating}
           onClick={() => {
+            setIsRotating(!(window as any).orbit.autoRotate);
             (window as any).orbit.autoRotate = !(window as any).orbit
               .autoRotate;
           }}
