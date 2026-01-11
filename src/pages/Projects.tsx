@@ -65,7 +65,7 @@ const Projects = () => {
         <ProjectTile onClick={() => clickProjectTile('portfolio')} label="Portfolio" projectId="portfolio" style={{ background: "url(./../src/assets/projectThumbnails/portfolio.png)" }} />
         <ProjectTile onClick={() => clickProjectTile('cultsSeller')} label="Cults3D Stats" projectId="cultsSeller" style={{ background: "url(./../src/assets/projectThumbnails/cults3dstats.png)", backgroundPositionY: '-60px' }} />
         <ProjectTile onClick={() => clickProjectTile('sti')} label="STI-Starcraft" projectId="sti" style={{ background: "url(./../src/assets/projectThumbnails/sti.png)" }} />
-        <ProjectTile onClick={() => clickProjectTile('valbarometern')} label="Valbarometern" projectId="valbarometern" style={{ background: "url(./../src/assets/projectThumbnails/valbarometern.png)" }} />
+        {/* <ProjectTile onClick={() => clickProjectTile('valbarometern')} label="Valbarometern" projectId="valbarometern" style={{ background: "url(./../src/assets/projectThumbnails/valbarometern.png)" }} /> */}
         <ProjectTile onClick={() => clickProjectTile('borghild')} label="Borghild (D2R bot)" projectId="borghild" style={{ background: "url(./../src/assets/projectThumbnails/borghild.png)" }} />
         <ProjectTile onClick={() => clickProjectTile('massStlExporter')} label="Mass STL Exporter" projectId="massStlExporter" style={{ background: "url(./../src/assets/projectThumbnails/massStlExporter.png)", backgroundSize: '108% !important', backgroundPositionY: '-63px', backgroundPositionX: '-2px' }} />
         <ProjectTile onClick={() => clickProjectTile('wcc')} label="World/Euro Cup Calculator" projectId="wcc" style={{ background: "url(./../src/assets/projectThumbnails/wcc.png)" }} />
