@@ -80,6 +80,8 @@ const run = async () => {
   await copyFolder('.htaccess', 'dist/.htaccess');
   await copyFolder('ec2024.png', 'dist/ec2024.png');
   await copyFolder('ec2021.png', 'dist/ec2021.png');
+  await copyFolder('browser-extension-test-site.html', 'dist/browser-extension-test-site.html');
+  await copyFolder('testpdf3.pdf', 'dist/testpdf3.pdf');
 
   await removeSizeIndicator();
 
@@ -91,6 +93,10 @@ const run = async () => {
     await copyFolder(
       'redirect_youtube_mass_stl.php',
       'dist/redirect_youtube_mass_stl.php'
+    );
+    await copyFolder(
+      'mass_stl_exporter.json',
+      'dist/mass_stl_exporter.json'
     );
 
     await createSymlink(
